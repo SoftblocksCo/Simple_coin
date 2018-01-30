@@ -1,0 +1,17 @@
+abci==0.3.0
+attrs==17.4.0
+colorlog==3.1.0
+coverage==4.4.2
+ed25519==1.4
+gevent==1.2.2
+greenlet==0.4.12
+pkg-resources==0.0.0
+pluggy==0.6.0
+protobuf==3.5.1
+py==1.5.2
+pytest==3.3.2
+pytest-cov==2.5.1
+pytest-pythonpath==0.7.1
+PyYAML==3.12
+redis==2.10.6
+six==1.11.0
