@@ -78,7 +78,7 @@ optional arguments:
 ```
 
 ## Generate new wallet
-This method creates new wallet file and save it in the `--wallet` path. Inside this file, there will be two rows: first one is a private key, second one is a public key. And this is all you need to use Simple Coin blockchain!
+This method creates new wallet file and saves it in the `--wallet` path. Inside this file there will be two rows: first one is a private key, second one is a public key. And this is all you need to use Simple Coin blockchain!
 
 ```bash
 $ python wallet.py --new --wallet Alice.sc
@@ -89,7 +89,7 @@ jqRN5C3kS4t7kr7vFtdjouz1pw7eKhn+YoK1LvBcvEU
 ```
 
 ## Generate transaction
-This method generates new transaction and sign it. Each transaction is a simple JSON, here's an example:
+This method generates new transaction and signs it. Each transaction is a simple JSON, here's an example:
 ```json
 {
   "sender" : "jqRN5C3kS4t7kr7vFtdjouz1pw7eKhn+YoK1LvBcvEU",
@@ -110,7 +110,7 @@ Your txn is printed bellow. Copy as it is and send with the ABCI query or using 
 
 
 ## Send transaction
-This methods broadcasts signed transaction to the Tendermint nodes. Also, you can do it manually: after launching `tendermint node` and Application, open the [http://localhost:46657/](http://localhost:46657/). It's something like build-in Tendermint API, which includes method `broadcast_tx_async` for txn broadcasting (just copy-paste your txn into the `tx` GET argument).
+This methods broadcasts signed transaction to the Tendermint nodes. Also, you can do it manually: after launching `tendermint node` and Application, open the [http://localhost:46657/](http://localhost:46657/). It's something like a build-in Tendermint API, which includes method `broadcast_tx_async` for txn broadcasting (just copy-paste your txn into the `tx` GET argument).
 ```bash
 $ python wallet.py --broadcast '0x7b2273656e646572223a202235393332633032666637343935613962353835663663633466353762633535356336633634326632643131336263656332393861303865356236653730646338222c20227265636569766572223a20226a71524e3543336b533474376b7237764674646a6f757a31707737654b686e2b596f4b314c764263764555222c202274696d657374616d70223a20313531373339363635372c202264617461223a202268692c20416c69636521222c20227369676e6174757265223a2022334b5750435434496d4b542f593535762b634866754270766f6c4e58747058516f306474516f7467624141564d5870424d48633734716850664f5376393569686d7369536e346f6f5039677557747158486b79334341222c2022616d6f756e74223a2031307d'
 Your txn have been broadcasted to the network!
