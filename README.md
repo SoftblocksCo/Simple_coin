@@ -34,6 +34,15 @@ $ source venv/bin/activate  # Activate your virtual environment every time you u
 $ pip install -r requirements.txt
 ```
 
+# Run Simple Coin
+```bash
+$ cd Simple_coin
+$ source venv/bin/activate
+$ cd Simple_coin  # In another terminal
+$ tendermint init --home .tendermint
+$ tendermint node --home .tendermint
+```
+
 # Wallet
 In order to achive the great UI/UX, I've developed the new generation wallet. So anyone can work with Simple Coin without any troubles and don't touch code at all. Ed25519 cryptography was used - [here's](https://ed25519.cr.yp.to/) the docs.
 ```bash
