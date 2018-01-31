@@ -58,14 +58,15 @@ class SimpleCoin(BaseApplication):
             return Result.error(log='txn syntax invalid')
 
         # Check "from" account has enough coins
-        print (self.db.get_address_info(tx.sender))
-
-        if self.db.get_address_info(tx.sender)['balance'] < tx.amount:
+        print (self.db.get_address_info(tx.sender), tx.amount)
+        if int(self.db.get_address_info(tx.sender)['balance']) < tx.amount:
             return Result.error(log='not sufficient funds')
 
+        print ("SIG", tx.signature_invalid)
         if tx.signature_invalid:  # Check txn signature
             return Result.error(log='signature invalid')
 
+        print ("TIMESTAMP", tx.timestamp_invalid)
         if tx.timestamp_invalid:  # Check timestamp for a big delay
             return Result.error(log='lag time is more than 2 hours')
         print ("END CHECK")

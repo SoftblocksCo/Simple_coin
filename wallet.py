@@ -117,7 +117,7 @@ if __name__ == "__main__":
         verifying_key = read_verifying_key(path=options.wallet)
 
         txn = {
-            "sender" : verifying_key.to_ascii(encoding="hex").decode(),
+            "sender" : verifying_key.to_ascii(encoding="base64").decode(),
             "receiver" : options.receiver,
             "amount" : options.amount,
             "data" : options.data,
