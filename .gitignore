@@ -1,0 +1,5 @@
+venv/
+*.pyc
+.tendermint/
+py-abci/
+*.sc

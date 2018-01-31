@@ -98,9 +98,9 @@ if __name__ == "__main__":
                 options.message.encode(),
                 encoding="base64"
             )
-            exit("Valid signature")
+            exit("Valid signature!")
         except ed25519.BadSignatureError:
-            exit("Invalid signature")
+            exit("Invalid signature!")
 
     #                      _           _
     #   ___ _ __ ___  __ _| |_ ___    | |___  ___ __
