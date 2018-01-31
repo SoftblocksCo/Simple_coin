@@ -132,7 +132,7 @@ if __name__ == "__main__":
         txn["signature"] = signing_key.sign(msg_to_sign.encode(), encoding="base64").decode("ascii")
 
         print ("Your txn is printed bellow. Copy as it is and send with the ABCI query\n")
-        print ('0x' + hexlify((dumps(txn).encode())).decode('utf-8'))
+        exit('0x' + hexlify((dumps(txn).encode())).decode('utf-8'))
 
     elif not isfile(options.wallet):
         exit("Can't find wallet, use 'python wallet.py -n'")

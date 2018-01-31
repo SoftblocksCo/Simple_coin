@@ -37,10 +37,10 @@ class Transaction(object):
 
     @property
     def signature_invalid(self):
-        """Check if the signature corresponds to the """
+        """Check if the signature corresponds to the sender's public key"""
 
         keys_sequence = sorted(self.txn.keys())
-        msg_to_sign = ";".join([str(self.txn[k]) for k in keys_sequence])
+        msg_to_sign = ";".join([str(self.txn[k]) for k in keys_sequence if k != "signature"])
         verifying_key = ed25519.VerifyingKey(self.sender, encoding="base64")
 
         try:
@@ -53,11 +53,9 @@ class Transaction(object):
         except ed25519.BadSignatureError:
             return True
 
-        return False
-
     @property
     def timestamp_invalid(self):
         current_datetime = datetime.now()
         txn_datetime = datetime.fromtimestamp(self.timestamp)
 
-        return int(abs(current_datetime - txn_datetime) / 3600) > 2
+        return int(abs(current_datetime - txn_datetime).total_seconds() / 3600) > 2

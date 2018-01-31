@@ -50,26 +50,21 @@ class SimpleCoin(BaseApplication):
 
     def check_tx(self, raw_tx):
         """Validate the Tx before entry into the mempool"""
-        print ("CHECK")
 
         try:  # Check txn syntax
             tx = utils.Transaction(raw_tx)
-        except SyntaxError:
+        except Exception:
             return Result.error(log='txn syntax invalid')
 
-        # Check "from" account has enough coins
-        print (self.db.get_address_info(tx.sender), tx.amount)
+        # Check "sender" account has enough coins
         if int(self.db.get_address_info(tx.sender)['balance']) < tx.amount:
-            return Result.error(log='not sufficient funds')
+            return Result.error(log='insufficient funds')
 
-        print ("SIG", tx.signature_invalid)
         if tx.signature_invalid:  # Check txn signature
             return Result.error(log='signature invalid')
 
-        print ("TIMESTAMP", tx.timestamp_invalid)
         if tx.timestamp_invalid:  # Check timestamp for a big delay
             return Result.error(log='lag time is more than 2 hours')
-        print ("END CHECK")
 
         # Hooray!
         return Result.ok()
