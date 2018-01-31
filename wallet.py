@@ -83,8 +83,8 @@ if __name__ == "__main__":
         signing_key = read_signing_key(options.wallet)
         sig = signing_key.sign(options.message.encode(), encoding="base64")
         exit("The signature is:\t {}".format(sig.decode("ascii")))
-    elif not isfile(options.wallet):
-        exit("Can't find wallet, use 'python wallet.py -n'")
+    elif options.sign and not isfile(options.wallet):
+        exit("SD Can't find wallet, use 'python wallet.py -n'")
 
     #    _               _            _
     # ___| |__   ___  ___| | __    ___(_) __ _ _ __
@@ -134,8 +134,8 @@ if __name__ == "__main__":
         print ("Your txn is printed bellow. Copy as it is and send with the ABCI query\n")
         exit('0x' + hexlify((dumps(txn).encode())).decode('utf-8'))
 
-    elif not isfile(options.wallet):
-        exit("Can't find wallet, use 'python wallet.py -n'")
+    elif options.transaction and not isfile(options.wallet):
+        exit("FFF Can't find wallet, use 'python wallet.py -n'")
 
     #  ___  ___ _ __   __| |   | |___  ___ __
     # / __|/ _ \ '_ \ / _` |   | __\ \/ / '_ \
@@ -146,9 +146,9 @@ if __name__ == "__main__":
         r = requests.get("http://localhost:46657/broadcast_tx_async?tx={}".format(options.broadcast))
 
         if r.status_code == 200:
-            exit("Your txn have been broadcasted to the network!")
+            exit("Your txn have been broadcasted to the network! Txn hash: {}".format(r.json()['result']['hash']))
         else:
-            exit("Can't broadcast your txn: {}".format())
+            exit("Can't broadcast your txn: {}".format(r.json()['result']['log']))
 
     #   __ _  ___| |_    | |__   __ _| | __ _ _ __   ___ ___
     #  / _` |/ _ \ __|   | '_ \ / _` | |/ _` | '_ \ / __/ _ \

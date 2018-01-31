@@ -15,7 +15,7 @@ class DatabaseProvider(object):
 
         return info
 
-    def update_state(self, address, genesis=False, genesis_balance=None, tx=None):
+    def update_state(self, address=None, genesis=False, genesis_balance=None, tx=None):
         """Update state for some address"""
 
         if genesis:

@@ -71,16 +71,14 @@ class SimpleCoin(BaseApplication):
 
     def deliver_tx(self, raw_tx):
         """ Mutate state if valid Tx """
-        print ("DELIVER")
 
         try:  # Handle unvalid txn
             tx = utils.Transaction(raw_tx)
-        except Exception as e:
-            return Result.error(log='txn syntax invalid: {}'.format(e))
+        except Exception:
+            return Result.error(log='txn syntax invalid')
 
         self.new_block_txs.append(tx)
         self.db.update_state(tx=tx)
-        print ("END DELIVER")
 
         return Result.ok()
 
@@ -111,7 +109,8 @@ class SimpleCoin(BaseApplication):
         you can use the height from here to record the last_block_height"""
 
         self.db.set_block_height(increment=True)
-        self.db.set_block_app_hash(utils.get_merkle_root(self.new_block_txs))
+        if self.new_block_txs:  # Change app hash only if there any new txns
+            self.db.set_block_app_hash(utils.get_merkle_root(self.new_block_txs))
 
         return ResponseEndBlock()
 
