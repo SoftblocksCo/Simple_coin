@@ -21,7 +21,6 @@ class SimpleCoin(BaseApplication):
     """
 
     def info(self):
-        print ("INFO")
         """Called by ABCI when the app first starts."""
 
         self.conf = utils.read_conf()
@@ -31,11 +30,9 @@ class SimpleCoin(BaseApplication):
         r.last_block_height = self.db.get_block_height()
         r.last_block_app_hash = self.db.get_block_app_hash().encode()
         return r
-        print ("END INFO")
 
     def init_chain(self, v):
         """Set initial state on first run"""
-        print ("INIT")
 
         for address, balance in self.conf['genesis']['lucky_bois'].items():
             self.db.update_state(
@@ -46,7 +43,6 @@ class SimpleCoin(BaseApplication):
 
         self.db.set_block_height(0)
         self.db.set_block_app_hash('')
-        print ("END INIT")
 
     def check_tx(self, raw_tx):
         """Validate the Tx before entry into the mempool"""
@@ -87,8 +83,6 @@ class SimpleCoin(BaseApplication):
         if reqQuery.path == 'balance':
             address = reqQuery.data.decode('utf-8')
             address_balance = self.db.get_address_info(address)['balance']
-
-            print (address, address_balance)
 
             rq = ResponseQuery(
                 code=0,

@@ -2,6 +2,7 @@ from argparse import ArgumentParser
 from time import time
 from json import dumps
 from binascii import hexlify
+from binascii import unhexlify
 
 from os import urandom
 from os.path import isfile
@@ -86,12 +87,12 @@ if __name__ == "__main__":
     elif options.sign and not isfile(options.wallet):
         exit("SD Can't find wallet, use 'python wallet.py -n'")
 
-    #    _               _            _
-    # ___| |__   ___  ___| | __    ___(_) __ _ _ __
-    # / __| '_ \ / _ \/ __| |/ /   / __| |/ _` | '_ \
+    #       _               _            _
+    #   ___| |__   ___  ___| | __    ___(_) __ _ _ __
+    #  / __| '_ \ / _ \/ __| |/ /   / __| |/ _` | '_ \
     # | (__| | | |  __/ (__|   <    \__ \ | (_| | | | |
-    # \___|_| |_|\___|\___|_|\_\   |___/_|\__, |_| |_|
-    #                                   |___/
+    #  \___|_| |_|\___|\___|_|\_\   |___/_|\__, |_| |_|
+    #                                      |___/
 
     if options.check_sign:
         verifying_key = ed25519.VerifyingKey(options.pub_key, encoding="base64")
@@ -146,9 +147,11 @@ if __name__ == "__main__":
         r = requests.get("http://localhost:46657/broadcast_tx_async?tx={}".format(options.broadcast))
 
         if r.status_code == 200:
-            exit("Your txn have been broadcasted to the network! Txn hash: {}".format(r.json()['result']['hash']))
+            txn_hash = r.json()['result']['hash'])
+            exit("Txn broadcasted, txn hash: {txn_hash}".format(txn_hash)
         else:
-            exit("Can't broadcast your txn: {}".format(r.json()['result']['log']))
+            error_log = r.json()['result']['log'])
+            exit("Can't broadcast your txn: {error_log}".format(error_log)
 
     #   __ _  ___| |_    | |__   __ _| | __ _ _ __   ___ ___
     #  / _` |/ _ \ __|   | '_ \ / _` | |/ _` | '_ \ / __/ _ \
@@ -160,7 +163,12 @@ if __name__ == "__main__":
         encoded_address = str(hexlify(options.get_balance.encode()), 'utf-8')
 
         # 0x62616c616e6365 = 'balance'
-        r = requests.get("http://localhost:46657/abci_query?path=0x62616c616e6365&data={}".format(encoded_address))
+        r = requests.get("http://localhost:46657/abci_query?path=0x62616c616e6365&data=0x{}".format(encoded_address))
 
         if r.status_code == 200:
-            exit("There are {} SimpleCoins on the {}")
+            encoded_balance = r.json()['result']['response']['value']
+
+            exit("There are {amount} SimpleCoins on the {address}".format(
+                amount=int.from_bytes(unhexlify(encoded_balance), byteorder='big'),
+                address=options.get_balance
+            ))
