@@ -38,6 +38,7 @@ $ pip install -r requirements.txt
 ```bash
 $ cd Simple_coin
 $ source venv/bin/activate
+$ python application.py
 $ cd Simple_coin  # In another terminal
 $ tendermint init --home .tendermint
 $ tendermint node --home .tendermint
@@ -109,16 +110,16 @@ Your txn is printed bellow. Copy as it is and send with the ABCI query or using 
 
 
 ## Send transaction
-This methods broadcasts signed transaction to the Tendermint nodes. Also, you can do it manually: after launching `tendermint node` and Applicatino, open the [http://localhost:46657/](http://localhost:46657/). It's something like build-in Tendermint API, which includes method `broadcast_tx_async` for txn broadcasting (just copy-paste your txn into the `tx` GET argument).
+This methods broadcasts signed transaction to the Tendermint nodes. Also, you can do it manually: after launching `tendermint node` and Application, open the [http://localhost:46657/](http://localhost:46657/). It's something like build-in Tendermint API, which includes method `broadcast_tx_async` for txn broadcasting (just copy-paste your txn into the `tx` GET argument).
 ```bash
 $ python wallet.py --broadcast '0x7b2273656e646572223a202235393332633032666637343935613962353835663663633466353762633535356336633634326632643131336263656332393861303865356236653730646338222c20227265636569766572223a20226a71524e3543336b533474376b7237764674646a6f757a31707737654b686e2b596f4b314c764263764555222c202274696d657374616d70223a20313531373339363635372c202264617461223a202268692c20416c69636521222c20227369676e6174757265223a2022334b5750435434496d4b542f593535762b634866754270766f6c4e58747058516f306474516f7467624141564d5870424d48633734716850664f5376393569686d7369536e346f6f5039677557747158486b79334341222c2022616d6f756e74223a2031307d'
 Your txn have been broadcasted to the network!
 ```
 
 ## Get balance
-This method returns your current balance. As well as `Send transaction` method, it also uses Tendermint API to make a query to the Application.
+This method returns your current balance. As well as `Send transaction` method, it uses Tendermint API to make a query to the Application. You should specify public key after `--get_balance` flag.
 ```bash
-$ python wallet.py --get_balance --wallet Alice.py
+$ python wallet.py --get_balance fRsyOcYoFJOg9nXk6iugOMApvRXEghAbSpFIHxRWdNA
 There are 1000 SimpleCoins on the fRsyOcYoFJOg9nXk6iugOMApvRXEghAbSpFIHxRWdNA
 ```
 
