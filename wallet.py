@@ -10,13 +10,18 @@ from sys import exit
 from sys import argv
 
 import ed25519
+import requests
 
 parser = ArgumentParser("Simple wallet for SimpleCoin")
 parser.add_argument('-n', '--new', help="Create new keypair", action="store_true")
 parser.add_argument('-w', '--wallet', help="Path to the .sc wallet", default="my.sc")
 parser.add_argument('-t', '--transaction', help="Create & sign a txn", action="store_true")
 
-# Argument for message signing
+# Arguments for working with Tendermint
+parser.add_argument('-b', '--broadcast', help="Broadcast txn to the network", default="")
+parser.add_argument('-g', '--get_balance', help="Get balance for some address", default="")
+
+# Arguments for message signing
 parser.add_argument('-s', '--sign', help="Sign a message", action="store_true")
 parser.add_argument('-c', '--check_sign', help="Specify the signature", default="")
 parser.add_argument('-m', '--message', help="Message to sign or to check",
@@ -36,7 +41,6 @@ parser.add_argument('-r', '--receiver', help="Transaction receiver",
 parser.add_argument('-d', '--data', help="Small piece of data to store in txn",
     type=str, default=""
 )
-# https://ed25519.cr.yp.to/
 
 def read_signing_key(path):
     with open(path, "rb") as ff:
@@ -121,7 +125,8 @@ if __name__ == "__main__":
         }
 
         # To sign a message you need to be sure, that the bytes sequence is imutable
-        # So, to be sure, it's better to sign not the JSON, but the values in some immutable order
+        # So it's better to sign not the JSON, but the values in immutable order
+        # To specify an order, I sorted all the keys lexicographically
         keys_sequence = sorted(txn.keys())
         msg_to_sign = ";".join([str(txn[k]) for k in keys_sequence])
         txn["signature"] = signing_key.sign(msg_to_sign.encode(), encoding="base64").decode("ascii")
@@ -131,3 +136,31 @@ if __name__ == "__main__":
 
     elif not isfile(options.wallet):
         exit("Can't find wallet, use 'python wallet.py -n'")
+
+    #  ___  ___ _ __   __| |   | |___  ___ __
+    # / __|/ _ \ '_ \ / _` |   | __\ \/ / '_ \
+    # \__ \  __/ | | | (_| |   | |_ >  <| | | |
+    # |___/\___|_| |_|\__,_|    \__/_/\_\_| |_|
+
+    if options.broadcast:
+        r = requests.get("http://localhost:46657/broadcast_tx_async?tx={}".format(options.broadcast))
+
+        if r.status_code == 200:
+            exit("Your txn have been broadcasted to the network!")
+        else:
+            exit("Can't broadcast your txn: {}".format())
+
+    #   __ _  ___| |_    | |__   __ _| | __ _ _ __   ___ ___
+    #  / _` |/ _ \ __|   | '_ \ / _` | |/ _` | '_ \ / __/ _ \
+    # | (_| |  __/ |_    | |_) | (_| | | (_| | | | | (_|  __/
+    #  \__, |\___|\__|   |_.__/ \__,_|_|\__,_|_| |_|\___\___|
+    #  |___/
+
+    if options.get_balance:
+        encoded_address = str(hexlify(options.get_balance.encode()), 'utf-8')
+
+        # 0x62616c616e6365 = 'balance'
+        r = requests.get("http://localhost:46657/abci_query?path=0x62616c616e6365&data={}".format(encoded_address))
+
+        if r.status_code == 200:
+            exit("There are {} SimpleCoins on the {}")
