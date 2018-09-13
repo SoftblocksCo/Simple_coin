@@ -136,7 +136,7 @@ if __name__ == "__main__":
         exit('0x' + hexlify((dumps(txn).encode())).decode('utf-8'))
 
     elif options.transaction and not isfile(options.wallet):
-        exit("FFF Can't find wallet, use 'python wallet.py -n'")
+        exit("Can't find wallet, use 'python wallet.py -n'")
 
     #  ___  ___ _ __   __| |   | |___  ___ __
     # / __|/ _ \ '_ \ / _` |   | __\ \/ / '_ \
@@ -147,11 +147,11 @@ if __name__ == "__main__":
         r = requests.get("http://localhost:46657/broadcast_tx_async?tx={}".format(options.broadcast))
 
         if r.status_code == 200:
-            txn_hash = r.json()['result']['hash'])
-            exit("Txn broadcasted, txn hash: {txn_hash}".format(txn_hash)
+            txn_hash = r.json()['result']['hash']
+            exit("Txn broadcasted, txn hash: {txn_hash}".format(txn_hash))
         else:
-            error_log = r.json()['result']['log'])
-            exit("Can't broadcast your txn: {error_log}".format(error_log)
+            err_log = r.json()['result']['log']
+            exit("Can't broadcast your txn: {err_log}".format(err_log))
 
     #   __ _  ___| |_    | |__   __ _| | __ _ _ __   ___ ___
     #  / _` |/ _ \ __|   | '_ \ / _` | |/ _` | '_ \ / __/ _ \
