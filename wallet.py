@@ -12,6 +12,7 @@ from sys import argv
 
 import ed25519
 import requests
+import base64
 
 parser = ArgumentParser("Simple wallet for SimpleCoin")
 parser.add_argument('-n', '--new', help="Create new keypair", action="store_true")
@@ -144,14 +145,14 @@ if __name__ == "__main__":
     # |___/\___|_| |_|\__,_|    \__/_/\_\_| |_|
 
     if options.broadcast:
-        r = requests.get("http://localhost:46657/broadcast_tx_async?tx={}".format(options.broadcast))
+        r = requests.get("http://localhost:26657/broadcast_tx_async?tx={}".format(options.broadcast))
 
         if r.status_code == 200:
             txn_hash = r.json()['result']['hash']
-            exit("Txn broadcasted, txn hash: {txn_hash}".format(txn_hash))
+            exit("Txn broadcasted, txn hash: {}".format(txn_hash))
         else:
             err_log = r.json()['result']['log']
-            exit("Can't broadcast your txn: {err_log}".format(err_log))
+            exit("Can't broadcast your txn: {}".format(err_log))
 
     #   __ _  ___| |_    | |__   __ _| | __ _ _ __   ___ ___
     #  / _` |/ _ \ __|   | '_ \ / _` | |/ _` | '_ \ / __/ _ \
@@ -163,12 +164,12 @@ if __name__ == "__main__":
         encoded_address = str(hexlify(options.get_balance.encode()), 'utf-8')
 
         # 0x62616c616e6365 = 'balance'
-        r = requests.get("http://localhost:46657/abci_query?path=0x62616c616e6365&data=0x{}".format(encoded_address))
+        r = requests.get("http://localhost:26657/abci_query?path=0x62616c616e6365&data=0x{}".format(encoded_address))
 
         if r.status_code == 200:
             encoded_balance = r.json()['result']['response']['value']
 
             exit("There are {amount} SimpleCoins on the {address}".format(
-                amount=int.from_bytes(unhexlify(encoded_balance), byteorder='big'),
+                amount=int.from_bytes(base64.b64decode(encoded_balance), byteorder='big'),
                 address=options.get_balance
             ))

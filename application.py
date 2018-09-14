@@ -88,6 +88,7 @@ class SimpleCoin(BaseApplication):
 
     def query(self, reqQuery):
         """Return the last tx count"""
+
         if reqQuery.path == 'balance':
             address = reqQuery.data.decode('utf-8')
             address_balance = self.db.get_address_info(address)['balance']
