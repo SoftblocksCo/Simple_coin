@@ -4,13 +4,20 @@ class DatabaseProvider(object):
     """docstring for DatabaseProvider."""
     def __init__(self, conf):
         self.conf = conf
-        self.r = Redis(db=conf["redis"]["db"], decode_responses=True) # Connect to the Redis
+        self.r = Redis(  # Connect to the Redis
+            db=conf["redis"]["db"],
+            decode_responses=True,
+            host=conf["redis"]["host"],
+            port=conf["redis"]["port"],
+            password=conf["redis"]["pass"]
+        )
         self.r.flushdb()
 
     def get_address_info(self, address):
-        """Get all the data, assoiated with the address"""
+        """Get all the data, assosiated with the address"""
+
         info = self.r.hgetall("state:{}".format(address))
-        if 'balance' not in info:
+        if 'balance' not in info:  # In case address has never appeared
             info['balance'] = 0
 
         return info
@@ -29,6 +36,8 @@ class DatabaseProvider(object):
         self.r.hincrby('state:{}'.format(tx.receiver), "balance", tx.amount)
 
     def get_block_height(self):
+        """Block height saved as an integer"""
+
         current_height = self.r.get("blockchain:height")
 
         if current_height is None:
@@ -42,6 +51,8 @@ class DatabaseProvider(object):
             self.r.set("blockchain:height", height)
 
     def get_block_app_hash(self):
+        """Latest block hash saved as a string"""
+
         current_hash = self.r.get("blockchain:app_hash")
 
         if current_hash is None:
@@ -49,4 +60,9 @@ class DatabaseProvider(object):
         return current_hash
 
     def set_block_app_hash(self, new_app_hash):
+        """
+            Used if new block has appeared. Save new hash
+            instead of old one.
+        """
+
         self.r.set("blockchain:app_hash", new_app_hash)

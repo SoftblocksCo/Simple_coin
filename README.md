@@ -27,7 +27,7 @@ PONG  # Press CTRL+C
 ## Repo
 ```bash
 $ sudo apt-get install python3-dev virtualenv git
-$ git clone https://github.com/pavlovdog/Simple_coin
+$ git clone https://github.com/SoftblocksCo/Simple_coin
 $ cd Simple_coin
 $ virtualenv --python python3 --no-site-packages venv
 $ source venv/bin/activate  # Activate your virtual environment every time you use Simple Coin

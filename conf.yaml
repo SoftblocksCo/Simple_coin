@@ -1,11 +1,9 @@
 redis:
   host: 127.0.0.1
   port: 6379
-  user: ""
   pass: ""
   db: 4
 genesis:
   lucky_bois:
-    jqRN5C3kS4t7kr7vFtdjouz1pw7eKhn+YoK1LvBcvEU : 1000
-    WTLAL/dJWptYX2zE9XvFVcbGQvLRE7zsKYoI5bbnDcg : 1000
-    MoT3MPszcvPavbLQsgVaBk5l5VaBMHwpMbVGLnavkxc : 1000
+    ps1466vShiP4e320cn0DaBCwRf4GQdeFlHlf8vAyn2E : 1000
+    NkjHzUjBoH0xNvGdeJg2ga2qkuFDO3n3J8IO8x21YJo : 1000

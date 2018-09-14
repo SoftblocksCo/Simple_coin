@@ -8,7 +8,12 @@ from abci import ABCIServer
 from abci import BaseApplication
 from abci import ResponseInfo
 from abci import ResponseQuery
-from abci import Result
+
+from abci import ResponseInitChain
+from abci import ResponseCheckTx
+from abci import ResponseDeliverTx
+from abci import ResponseCommit
+from abci import CodeTypeOk
 
 from abci.types_pb2 import ResponseEndBlock
 from abci.types_pb2 import ResponseBeginBlock
@@ -20,7 +25,7 @@ class SimpleCoin(BaseApplication):
         in the blockchain.
     """
 
-    def info(self):
+    def info(self, req):
         """Called by ABCI when the app first starts."""
 
         self.conf = utils.read_conf()
@@ -29,6 +34,7 @@ class SimpleCoin(BaseApplication):
         r = ResponseInfo()
         r.last_block_height = self.db.get_block_height()
         r.last_block_app_hash = self.db.get_block_app_hash().encode()
+
         return r
 
     def init_chain(self, v):
@@ -44,6 +50,8 @@ class SimpleCoin(BaseApplication):
         self.db.set_block_height(0)
         self.db.set_block_app_hash('')
 
+        return ResponseInitChain()
+
     def check_tx(self, raw_tx):
         """Validate the Tx before entry into the mempool"""
 
@@ -54,16 +62,16 @@ class SimpleCoin(BaseApplication):
 
         # Check "sender" account has enough coins
         if int(self.db.get_address_info(tx.sender)['balance']) < tx.amount:
-            return Result.error(log='insufficient funds')
+            return ResponseCheckTx(log='insufficient funds', code=1)
 
         if tx.signature_invalid:  # Check txn signature
-            return Result.error(log='signature invalid')
+            return ResponseCheckTx(log='signature invalid', code=1)
 
         if tx.timestamp_invalid:  # Check timestamp for a big delay
-            return Result.error(log='lag time is more than 2 hours')
+            return ResponseCheckTx(log='lag time is more than 2 hours', code=1)
 
         # Hooray!
-        return Result.ok()
+        return ResponseCheckTx(code=CodeTypeOk)
 
     def deliver_tx(self, raw_tx):
         """ Mutate state if valid Tx """
@@ -71,12 +79,12 @@ class SimpleCoin(BaseApplication):
         try:  # Handle unvalid txn
             tx = utils.Transaction(raw_tx)
         except Exception:
-            return Result.error(log='txn syntax invalid')
+            return ResponseDeliverTx(log='txn syntax invalid', code=1)
 
         self.new_block_txs.append(tx)
         self.db.update_state(tx=tx)
 
-        return Result.ok()
+        return ResponseDeliverTx(code=CodeTypeOk)
 
     def query(self, reqQuery):
         """Return the last tx count"""
@@ -85,7 +93,7 @@ class SimpleCoin(BaseApplication):
             address_balance = self.db.get_address_info(address)['balance']
 
             rq = ResponseQuery(
-                code=0,
+                code=CodeTypeOk,
                 key=b'balance',
                 value=utils.encode_number(int(address_balance))
             )
@@ -113,8 +121,8 @@ class SimpleCoin(BaseApplication):
 
         h = self.db.get_block_app_hash().encode()
 
-        return Result.ok(data=h)
+        return ResponseCommit(data=h)
 
 if __name__ == '__main__':
-    app = ABCIServer(app=SimpleCoin())
+    app = ABCIServer(app=SimpleCoin(), port=26658)
     app.run()
