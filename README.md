@@ -3,15 +3,12 @@ To use Simple Coin you should install Tendermint core, Redis and some Python lib
 
 ## Tendermint & abci-cli (optional, need for testing)
 ```bash
-$ go version  # Make sure that you use Go verion 1.9
-go version go1.9 linux/amd64
-$ go get github.com/tendermint/tendermint/cmd/tendermint  # Install Tendermint
-$ $ tendermint version  # Check is everything ok
-0.15.0
-$ go get github.com/tendermint/abci  # Install abci-cli
-$ cd $GOPATH/src/github.com/tendermint/abci
-$ make get_vendor_deps
-$ make install
+$ mkdir tendermint
+$ cd tendermint
+$ sudo docker run --rm -v /your/tendermint/folder:/tendermint tendermint/tendermint:0.24.0 init
+[10-18|17:05:28.863] Generated private validator   module=main path=/tendermint/config/priv_validator.json
+[10-18|17:05:28.863] Generated node key            module=main path=/tendermint/config/node_key.json
+[10-18|17:05:28.863] Generated genesis file        module=main path=/tendermint/config/genesis.json
 ```
 
 ## Redis
@@ -29,7 +26,7 @@ PONG  # Press CTRL+C
 $ sudo apt-get install python3-dev virtualenv git
 $ git clone https://github.com/SoftblocksCo/Simple_coin
 $ cd Simple_coin
-$ virtualenv --python python3 --no-site-packages venv
+$ virtualenv --python python3.6 --no-site-packages venv
 $ source venv/bin/activate  # Activate your virtual environment every time you use Simple Coin
 $ pip install -r requirements.txt
 ```
@@ -39,9 +36,8 @@ $ pip install -r requirements.txt
 $ cd Simple_coin
 $ source venv/bin/activate
 $ python application.py
-$ cd Simple_coin  # In another terminal
-$ tendermint init --home .tendermint
-$ tendermint node --home .tendermint
+$ # In another terminal
+$ sudo docker run --rm --network "host" -v /home/maga/tmp:/tendermint tendermint/tendermint:0.24.0 node
 ```
 
 # Wallet
