@@ -38,7 +38,7 @@ $ source venv/bin/activate
 $ python application.py
 $ # In another terminal
 $ cd tendermint # directory we created earlier
-$ sudo docker run --rm --network "host" -v /home/maga/tmp:/tendermint tendermint/tendermint:0.24.0 node
+$ sudo docker run --rm --network "host" -v /your/tendermint/folder:/tendermint tendermint/tendermint:0.24.0 node
 ```
 
 # Wallet
